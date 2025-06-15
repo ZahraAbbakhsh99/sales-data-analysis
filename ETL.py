@@ -110,3 +110,21 @@ for _, row in df[['product_id', 'product_name', 'unit', 'product_category', 'pro
         cursor.execute("INSERT IGNORE INTO products (id, name, unit, category_id) VALUES (%s, %s, %s, %s)", (product_id, name, unit, cat_id))
         conn.commit()
         product_map[product_id] = product_id
+
+# Invoices
+for _, row in df[['invoice_id', 'status_invoice', 'date', 'date_time', 'seller_id', 'customer_id', 'store_name']].drop_duplicates().iterrows():
+    invoice_id = row['invoice_id']
+    if pd.isna(invoice_id) or invoice_id in invoice_map:
+        continue
+    cursor.execute("""
+        INSERT IGNORE INTO invoices 
+        (id, status, date, date_time, seller_id, customer_id, store_id) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """, (
+        clean_value(invoice_id), clean_value(row['status_invoice']),
+        clean_value(row['date']), clean_value(row['date_time']),
+        clean_value(row['seller_id']), clean_value(row['customer_id']),
+        clean_value(store_map.get(row['store_name']))
+    ))
+    conn.commit()
+    invoice_map[invoice_id] = invoice_id
