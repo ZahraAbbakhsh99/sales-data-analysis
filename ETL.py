@@ -44,3 +44,13 @@ def insert_or_get_id(table, key_col, key_value, return_col='id', insert_query=No
         conn.commit()
         return cursor.lastrowid if return_col == 'id' else key_value
     return None
+
+# Stores
+for store_name in df['store_name'].dropna().unique():
+    if store_name not in store_map:
+        insert_query = "INSERT IGNORE INTO stores (name) VALUES (%s)"
+        store_id = insert_or_get_id('stores', 'name', store_name, insert_query=insert_query, insert_values=(clean_value(store_name),))
+        if store_id is None:
+            cursor.execute("SELECT id FROM stores WHERE name=%s", (store_name,))
+            store_id = cursor.fetchone()[0]
+        store_map[store_name] = store_id
