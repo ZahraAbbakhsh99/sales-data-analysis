@@ -73,3 +73,10 @@ for customer_id, customer_category in df[['customer_id', 'customer_category']].d
         cursor.execute("INSERT IGNORE INTO customers (id, category) VALUES (%s, %s)", (customer_id, customer_category))
         conn.commit()
         customer_map[customer_id] = customer_id
+        
+# Product Categories
+for product_category in df['product_category'].dropna().unique():
+    if product_category not in product_category_map:
+        insert_query = "INSERT IGNORE INTO products_category (name) VALUES (%s)"
+        cat_id = insert_or_get_id('products_category', 'name', product_category, insert_query=insert_query, insert_values=(clean_value(product_category),))
+        product_category_map[product_category] = cat_id
