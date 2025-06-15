@@ -59,3 +59,10 @@ for store_name in df['store_name'].dropna().unique():
             cursor.execute("SELECT id FROM stores WHERE name=%s", (store_name,))
             store_id = cursor.fetchone()[0]
         store_map[store_name] = store_id
+
+# Sellers
+for seller_id, seller_name in df[['seller_id', 'seller_name']].drop_duplicates().values:
+    if pd.notna(seller_id) and pd.notna(seller_name) and seller_id not in seller_map:
+        cursor.execute("INSERT IGNORE INTO sellers (id, name) VALUES (%s, %s)", (seller_id, seller_name))
+        conn.commit()
+        seller_map[seller_id] = seller_id
