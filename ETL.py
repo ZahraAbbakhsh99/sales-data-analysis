@@ -128,3 +128,13 @@ for _, row in df[['invoice_id', 'status_invoice', 'date', 'date_time', 'seller_i
     ))
     conn.commit()
     invoice_map[invoice_id] = invoice_id
+
+# Invoice Products
+invoice_products = df[['invoice_id', 'product_id', 'quantity']].drop_duplicates().values
+for invoice_id, product_id, quantity in invoice_products:
+    try:
+        cursor.execute("INSERT IGNORE INTO invoice_products (invoice_id, product_id, quantity) VALUES (%s, %s, %s)",
+                       (invoice_id, product_id, quantity))
+    except mysql.connector.Error as e:
+        print(f"Error inserting invoice_products ({invoice_id}, {product_id}): {e}")
+conn.commit()
