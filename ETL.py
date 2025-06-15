@@ -66,3 +66,10 @@ for seller_id, seller_name in df[['seller_id', 'seller_name']].drop_duplicates()
         cursor.execute("INSERT IGNORE INTO sellers (id, name) VALUES (%s, %s)", (seller_id, seller_name))
         conn.commit()
         seller_map[seller_id] = seller_id
+
+# Customers
+for customer_id, customer_category in df[['customer_id', 'customer_category']].drop_duplicates().values:
+    if pd.notna(customer_id) and pd.notna(customer_category) and customer_id not in customer_map:
+        cursor.execute("INSERT IGNORE INTO customers (id, category) VALUES (%s, %s)", (customer_id, customer_category))
+        conn.commit()
+        customer_map[customer_id] = customer_id
