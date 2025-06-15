@@ -138,3 +138,7 @@ for invoice_id, product_id, quantity in invoice_products:
     except mysql.connector.Error as e:
         print(f"Error inserting invoice_products ({invoice_id}, {product_id}): {e}")
 conn.commit()
+
+cursor.close()
+conn.close()
+print("All data inserted successfully.")
