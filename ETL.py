@@ -98,3 +98,15 @@ for _, row in subcat_unique.iterrows():
         cursor.execute("SELECT id FROM product_sub_category WHERE category_id=%s AND sub_category=%s", (cat_id, sub_cat))
         subcat_id = cursor.fetchone()[0]
         product_sub_category_map[key] = subcat_id
+
+# Products
+for _, row in df[['product_id', 'product_name', 'unit', 'product_category', 'product_sub_category']].drop_duplicates().iterrows():
+    product_id = row['product_id']
+    name = row['product_name']
+    unit = row['unit']
+    cat_id = product_category_map.get(row['product_category'])
+
+    if product_id not in product_map:
+        cursor.execute("INSERT IGNORE INTO products (id, name, unit, category_id) VALUES (%s, %s, %s, %s)", (product_id, name, unit, cat_id))
+        conn.commit()
+        product_map[product_id] = product_id
