@@ -1,6 +1,11 @@
 import mysql.connector
 import pandas as pd
 
+def clean_value(val):
+    if pd.isna(val):
+        return None
+    return val
+
 def normalize_persian_date(pdate):
     if isinstance(pdate, str):
         return pdate.replace('/', '-')
